@@ -1,35 +1,39 @@
-import React, { useEffect } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 import { db, storage } from './firebase'
+import { ProductImage } from './ProductImage'
 
 export const Products = () => {
 
+    const [products, setProducts] = useState({ products: [] })
 
-    // async function getProducts() {
-    //     db.ref('/products').on('value', (snapshot) => {
-    //         return snapshot.val()
-    //     });
-    // }
+    function getProducts() {
+        db.ref('/products').on('value', (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                setProducts({
+                    products: Array.from(Object.entries(data))
+                })
+            }
+        });
+    }
 
-    // const products = db.ref('/products').on('value', (snapshot) => {
-    //     return snapshot.val()
-    // });
-
-
-    const dupa = db.ref('/products').on('value', (snapshot) => {
-        const data = snapshot.val();
-        return data
-    });
-
-    console.log(dupa)
-
+    useEffect(() => {
+        getProducts()
+        console.log(products)
+    }, [])
 
     return (
-        <div>
 
-            {/* <p>{description}</p>
-            <p>{price.amount}</p>
-            <p>{price.value}</p>
-            <p>{price.unit}</p> */}
+        <div>
+            {console.log(products.products)}
+            {products.products.map(product => {
+                return (
+                    <>
+                        <ProductImage imageUrl={product[1].image_url} />
+                        <p>{product[1].description}</p>
+                    </>
+                )
+            })}
         </div>
     )
 }

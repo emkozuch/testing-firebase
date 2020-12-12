@@ -35,7 +35,7 @@ export const Form = () => {
         })
 
         const nextId = productsArr.length + 1
-        const imageUrl = `/image-${productsArr.length}`
+        const imageUrl = `image-${productsArr.length}`
 
         await db.ref("/products").push({
             description,
