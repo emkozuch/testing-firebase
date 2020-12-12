@@ -7,8 +7,7 @@ export const ProductImage = ({ imageUrl }) => {
 
     useEffect(() => {
         storage.ref(`${imageUrl}`).getDownloadURL().then(url => setUrl(url))
-        console.log(url)
-    }, [])
+    }, [url])
 
     return (
         <>

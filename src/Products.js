@@ -19,13 +19,13 @@ export const Products = () => {
 
     useEffect(() => {
         getProducts()
-        console.log(products)
+        // console.log(products)
     }, [])
 
     return (
 
         <div>
-            {console.log(products.products)}
+            {/* {console.log(products.products)} */}
             {products.products.map(product => {
                 return (
                     <>

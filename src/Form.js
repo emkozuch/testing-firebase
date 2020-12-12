@@ -9,9 +9,7 @@ export const Form = () => {
         unit: '',
         value: '',
         image: '',
-        childrenCount: 0
     })
-    const [childrenCount, setChildrenCount] = useState(0)
 
 
     function handleSubmit(e) {
@@ -26,28 +24,33 @@ export const Form = () => {
         })
     }
 
-    async function sendData(data) {
+    function sendData(data) {
         const { description, amount, unit, value, image } = data
-        const productsArr = []
+        let lastProductID = 0
 
-        await db.ref("/products").once('value', snapshot => {
-            snapshot.forEach(child => productsArr.push(child))
+        db.ref("/products").limitToLast(1).once('value', snapshot => {
+            if (snapshot.val() !== null) {
+                const lastProductData = Object.entries(snapshot.val())[0][1]
+                lastProductID = lastProductData.id
+            } else {
+                lastProductID = 0
+            }
         })
 
-        const nextId = productsArr.length + 1
-        const imageUrl = `image-${productsArr.length}`
+        const nextId = lastProductID + 1
+        const imageUrl = `image-${nextId}`
 
-        await db.ref("/products").push({
+        db.ref("/products").push({
             description,
-            id: nextId,
             price: {
                 amount,
                 unit,
                 value
             },
+            id: nextId,
             image_url: imageUrl
         })
-        await storage.ref(`/${imageUrl}`).put(image)
+        storage.ref(`/${imageUrl}`).put(image)
     }
 
     function handleFileInput(e) {
